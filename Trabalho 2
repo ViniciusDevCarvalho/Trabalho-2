@@ -1,0 +1,151 @@
+package trabalho2;
+
+public class aluno {
+    String nome;
+    int[] notas;
+    boolean estaAprovado;
+    String matricula;
+
+    public aluno(String nome, int[] notas, String matricula) {
+        this.nome = nome;
+        this.notas = notas;
+        this.matricula = matricula;
+        this.estaAprovado = calcularAprovacao();
+    }
+
+    public boolean calcularAprovacao() {
+        int soma = 0;
+        for (int nota : notas) {
+            soma += nota;
+        }
+        double media = (double) soma / notas.length;
+        return media > 6;
+    }
+
+    public double calcularMedia() {
+        int soma = 0;
+        for (int nota : notas) {
+            soma += nota;
+        }
+        return (double) soma / notas.length;
+    }
+}
+
+package trabalho2;
+
+import java.util.*;
+
+public class Main {
+    
+    private static Map<String, aluno> mapaAlunos = new HashMap<>();
+    private static Scanner scanner = new Scanner(System.in);
+    
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("1. Adicionar Aluno");
+            System.out.println("2. Editar Aluno");
+            System.out.println("3. Remover Aluno");
+            System.out.println("4. Calcular Média e Aprovação");
+            System.out.println("5. Sair");
+            System.out.print("Escolha uma opção: ");
+            
+            if (scanner.hasNextInt()) {
+                int escolha = scanner.nextInt();
+                scanner.nextLine(); // Consumir caractere de nova linha
+                
+                switch (escolha) {
+                    case 1:
+                        adicionarAluno();
+                        break;
+                    case 2:
+                        editarAluno();
+                        break;
+                    case 3:
+                        removerAluno();
+                        break;
+                    case 4:
+                        calcularMediaEAprovacao();
+                        break;
+                    case 5:
+                        System.out.println("Encerrando programa.");
+                        System.exit(0);
+                    default:
+                        System.out.println("Escolha inválida. Por favor, escolha uma opção válida.");
+                }
+            } else {
+                System.out.println("Entrada inválida. Por favor, escolha uma opção válida.");
+                scanner.nextLine(); // Consumir entrada inválida
+            }
+        }
+    }
+    
+    private static void adicionarAluno() {
+        System.out.print("Digite o nome do aluno: ");
+        String nome = scanner.nextLine();
+
+        System.out.print("Digite a matrícula do aluno: ");
+        String matricula = scanner.nextLine();
+
+        System.out.print("Digite o número de notas: ");
+        int numNotas = scanner.nextInt();
+        int[] notas = new int[numNotas];
+
+        for (int i = 0; i < numNotas; i++) {
+            System.out.printf("Digite a nota %d: ", i + 1);
+            notas[i] = scanner.nextInt();
+        }
+
+        aluno aluno = new aluno(nome, notas, matricula);
+        mapaAlunos.put(matricula, aluno);
+        System.out.println("Aluno adicionado com sucesso!");
+    }
+
+    private static void editarAluno() {
+        System.out.print("Digite a matrícula do aluno a ser editado: ");
+        String matricula = scanner.nextLine();
+
+        if (mapaAlunos.containsKey(matricula)) {
+            aluno aluno = mapaAlunos.get(matricula);
+
+            System.out.print("Digite o número de notas: ");
+            int numNotas = scanner.nextInt();
+            int[] notas = new int[numNotas];
+
+            for (int i = 0; i < numNotas; i++) {
+                System.out.printf("Digite a nota %d: ", i + 1);
+                notas[i] = scanner.nextInt();
+            }
+
+            aluno.notas = notas;
+            aluno.estaAprovado = aluno.calcularAprovacao();
+            System.out.println("Aluno editado com sucesso!");
+        } else {
+            System.out.println("Aluno não encontrado.");
+        }
+    }
+
+    private static void removerAluno() {
+        System.out.print("Digite a matrícula do aluno a ser removido: ");
+        String matricula = scanner.nextLine();
+
+        if (mapaAlunos.containsKey(matricula)) {
+            mapaAlunos.remove(matricula);
+            System.out.println("Aluno removido com sucesso!");
+        } else {
+            System.out.println("Aluno não encontrado.");
+        }
+    }
+
+    private static void calcularMediaEAprovacao() {
+        System.out.print("Digite a matrícula do aluno: ");
+        String matricula = scanner.nextLine();
+
+        if (mapaAlunos.containsKey(matricula)) {
+            aluno aluno = mapaAlunos.get(matricula);
+            System.out.println("Média das notas: " + aluno.calcularMedia());
+            System.out.println("Status de aprovação: " + (aluno.estaAprovado ? "Aprovado" : "Não Aprovado"));
+        } else {
+            System.out.println("Aluno não encontrado.");
+        }
+    }
+}
